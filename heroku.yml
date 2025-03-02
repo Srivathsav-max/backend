@@ -2,11 +2,13 @@ setup:
   config:
     GO_VERSION: 1.22
 build:
+  packages:
+    - prisma-engines
   golang:
     main: main.go
-    binary: app
+    binary: bin/backend
 release:
   command:
     - ./heroku-build.sh
 run:
-  web: ./app
+  web: bin/backend

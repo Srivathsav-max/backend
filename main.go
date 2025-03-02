@@ -13,23 +13,26 @@ import (
 )
 
 func main() {
-	development := os.Getenv("DEVELOPMENT")
-
-	if development == "true" {
-		err := godotenv.Load()
-		if err != nil {
-			fmt.Println("⚠️ Warning: No .env file found, using environment variables")
-		}
+	// Always try to load .env file first
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("⚠️ Note: No .env file found, will use environment variables")
 	}
+
+	development := os.Getenv("DEVELOPMENT")
+	if development == "" {
+		development = "true" // Default to development mode if not set
+	}
+
+	// Initialize database connection
+	config.InitDatabase()
+	defer config.DisconnectDatabase()
 
 	// Get port with fallback
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
-
-	config.InitDatabase()
-	defer config.DisconnectDatabase()
 
 	app := fiber.New()
 
@@ -38,8 +41,6 @@ func main() {
 	if corsOrigins == "" {
 		if development == "true" {
 			corsOrigins = "http://localhost:3000"
-		} else {
-			corsOrigins = "https://moxium.tech"
 		}
 	}
 
@@ -53,7 +54,8 @@ func main() {
 
 	routes.SetupRoutes(app)
 
-	err := app.Listen(":" + port)
+	// Start server
+	err = app.Listen(":" + port)
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 		os.Exit(1)

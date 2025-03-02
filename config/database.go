@@ -1,28 +1,37 @@
 package config
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/srivathsav-max/backend/prisma/db"
 )
 
 var DB *db.PrismaClient
 
-func InitDatabase(){
+func InitDatabase() {
+	if os.Getenv("DATABASE_URL") == "" {
+		log.Fatal("DATABASE_URL environment variable is not set")
+	}
+	if os.Getenv("DIRECT_URL") == "" {
+		log.Fatal("DIRECT_URL environment variable is not set")
+	}
 
 	DB = db.NewClient()
-
-	err := DB.Prisma.Connect()
-	if err != nil{
-		log.Fatal("Could Not Connect to Database", err)
+	if err := DB.Prisma.Connect(); err != nil {
+		log.Fatal(fmt.Sprintf("Could not connect to database: %v", err))
 	}
-	log.Println("Connected to Database")
+	
+	log.Println("✅ Successfully connected to database")
 }
 
-func DisconnectDatabase(){
-	err := DB.Prisma.Disconnect()
-	if err != nil{
-		log.Fatal("Could Not Disconnect to Database", err)
+func DisconnectDatabase() {
+	if DB != nil {
+		if err := DB.Prisma.Disconnect(); err != nil {
+			log.Printf("Warning: Error disconnecting from database: %v", err)
+			return
+		}
+		log.Println("✅ Successfully disconnected from database")
 	}
-	log.Println("Disconnected to Database")
 }
