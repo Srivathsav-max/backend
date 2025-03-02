@@ -12,6 +12,7 @@ func CreateUser(c *fiber.Ctx) error {
 	var body struct{
 		Name string `json:"name"`
 		Email string `json:"email"`
+		Password string `json:"password"`
 	}
 	err := c.BodyParser(&body) // it used to parse the request body and store the result in the body
 	if err != nil {
@@ -23,6 +24,7 @@ func CreateUser(c *fiber.Ctx) error {
 	newUser, err := config.DB.User.CreateOne(
 		db.User.Name.Set(body.Name),
 		db.User.Email.Set(body.Email),
+		db.User.Password.Set(body.Password),
 	).Exec(context.Background()) //context.Background() is used to create an empty context
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{ // 500 Internal Server Error
