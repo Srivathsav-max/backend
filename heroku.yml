@@ -1,0 +1,5 @@
+build:
+  languages:
+    go: {}
+  pre:
+    - go run github.com/steebchen/prisma-client-go generate
