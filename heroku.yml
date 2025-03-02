@@ -1,0 +1,11 @@
+setup:
+  config:
+    GO_VERSION: 1.23
+build:
+  run:
+    - go mod download
+release:
+  command:
+    - ./heroku-build.sh
+run:
+  web: ./backend
