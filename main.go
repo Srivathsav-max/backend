@@ -1,10 +1,11 @@
 package main
 
 import (
-	"backend/config"
-	"backend/routes"
 	"fmt"
 	"os"
+
+	"github.com/srivathsav-max/backend/config"
+	"github.com/srivathsav-max/backend/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"

@@ -3,7 +3,7 @@ package config
 import (
 	"log"
 
-	"backend/prisma/db"
+	"github.com/srivathsav-max/backend/prisma/db"
 )
 
 var DB *db.PrismaClient

@@ -1,9 +1,10 @@
 package controllers
 
 import (
-	"backend/config"
-	"backend/prisma/db"
 	"context"
+
+	"github.com/srivathsav-max/backend/config"
+	"github.com/srivathsav-max/backend/prisma/db"
 
 	"github.com/gofiber/fiber/v2"
 )

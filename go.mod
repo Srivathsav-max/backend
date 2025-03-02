@@ -1,4 +1,4 @@
-module backend
+module github.com/srivathsav-max/backend
 
 go 1.23.6
 

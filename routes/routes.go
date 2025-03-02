@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"backend/controllers"
+	"github.com/srivathsav-max/backend/controllers"
 
 	"github.com/gofiber/fiber/v2"
 )
