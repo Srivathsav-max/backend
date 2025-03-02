@@ -1,2 +1,2 @@
-release: ./heroku-postbuild.sh
-web: bin/backend
+release: ./heroku-build.sh
+web: ./backend
