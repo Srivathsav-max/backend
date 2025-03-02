@@ -1,2 +1,2 @@
-release: ./heroku-build.sh
+release: ./backend/heroku-build.sh
 web: ./backend

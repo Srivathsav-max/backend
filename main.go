@@ -14,34 +14,40 @@ import (
 
 func main(){
 	err := godotenv.Load() // it used to load the .env file
+
 	if err != nil {
 		fmt.Println("Error loading .env file")
 	}
-	config.InitDatabase()
-	defer config.DisconnectDatabase()
-	app := fiber.New()
-
-// Set default CORS origin if not provided
-corsOrigins := os.Getenv("CORS_ORIGIN")
-if corsOrigins == "" {
-    corsOrigins = "http://localhost:3000"
-}
-
-app.Use(cors.New(cors.Config{
-    AllowOrigins: corsOrigins,
-    AllowHeaders: "Origin, Content-Type, Accept, Authorization",
-    AllowMethods: "GET, POST, PUT, DELETE, OPTIONS",
-    AllowCredentials: true,
-    ExposeHeaders: "Set-Cookie",
-}))
-	routes.SetupRoutes(app)
 
 	port := os.Getenv("PORT")
+	development := os.Getenv("DEVELOPMENT")
 
-	if port == "" {
-		err = app.Listen("")
-	}else{
-		err = app.Listen(":" + os.Getenv("PORT"))
+	config.InitDatabase()
+	defer config.DisconnectDatabase()
+
+	app := fiber.New()
+
+	// Set default CORS origin if not provided
+	corsOrigins := os.Getenv("CORS_ORIGIN")
+	if corsOrigins == "" {
+		corsOrigins = "http://localhost:3000"
+	}
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: corsOrigins,
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+		AllowMethods: "GET, POST, PUT, DELETE, OPTIONS",
+		AllowCredentials: true,
+		ExposeHeaders: "Set-Cookie",
+	}))
+
+	routes.SetupRoutes(app)
+
+
+	if development == "true" {
+		err = app.Listen( os.Getenv("API_URL") + ":" + port)
+	} else {
+		err = app.Listen(":" + "8080")
 	}
 	
 	if err != nil {
