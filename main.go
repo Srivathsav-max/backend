@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"os"
+	"log"
 
 	"github.com/srivathsav-max/backend/config"
 	"github.com/srivathsav-max/backend/routes"
@@ -14,38 +13,21 @@ import (
 
 func main() {
 	// Always try to load .env file first
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("⚠️ Note: No .env file found, will use environment variables")
+	if err := godotenv.Load(); err != nil {
+		log.Println("⚠️ Note: No .env file found, will use environment variables")
 	}
 
-	development := os.Getenv("DEVELOPMENT")
-	if development == "" {
-		development = "true" // Default to development mode if not set
+	// Initialize database with new config management
+	if err := config.InitDatabase(); err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
 	}
-
-	// Initialize database connection
-	config.InitDatabase()
 	defer config.DisconnectDatabase()
-
-	// Get port with fallback
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
 
 	app := fiber.New()
 
-	// Set default CORS origin if not provided
-	corsOrigins := os.Getenv("CORS_ORIGIN")
-	if corsOrigins == "" {
-		if development == "true" {
-			corsOrigins = "http://localhost:3000"
-		}
-	}
-
+	// Use CORS config from environment
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     corsOrigins,
+		AllowOrigins:     config.AppConfig.CorsOrigin,
 		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
 		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS",
 		AllowCredentials: true,
@@ -54,10 +36,8 @@ func main() {
 
 	routes.SetupRoutes(app)
 
-	// Start server
-	err = app.Listen(":" + port)
-	if err != nil {
-		fmt.Println("Error starting server:", err)
-		os.Exit(1)
+	log.Printf("🚀 Starting server on port %s", config.AppConfig.Port)
+	if err := app.Listen(":" + config.AppConfig.Port); err != nil {
+		log.Fatalf("Server error: %v", err)
 	}
 }
