@@ -34,8 +34,15 @@ app.Use(cors.New(cors.Config{
     ExposeHeaders: "Set-Cookie",
 }))
 	routes.SetupRoutes(app)
+
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		err = app.Listen("")
+	}else{
+		err = app.Listen(":" + os.Getenv("PORT"))
+	}
 	
-	err = app.Listen(":" + os.Getenv("PORT"))
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 		os.Exit(1)
