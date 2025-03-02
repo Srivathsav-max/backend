@@ -7,7 +7,6 @@ build:
   config:
     DEVELOPMENT: false
   pre:
-    - mkdir -p prisma/db
     - go run github.com/steebchen/prisma-client-go generate
   golang:
     main: main.go
