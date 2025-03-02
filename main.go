@@ -12,15 +12,21 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main(){
-	err := godotenv.Load() // it used to load the .env file
+func main() {
+	development := os.Getenv("DEVELOPMENT")
 
-	if err != nil {
-		fmt.Println("Error loading .env file")
+	if development == "true" {
+		err := godotenv.Load()
+		if err != nil {
+			fmt.Println("⚠️ Warning: No .env file found, using environment variables")
+		}
 	}
 
+	// Get port with fallback
 	port := os.Getenv("PORT")
-	development := os.Getenv("DEVELOPMENT")
+	if port == "" {
+		port = "8080"
+	}
 
 	config.InitDatabase()
 	defer config.DisconnectDatabase()
@@ -30,26 +36,24 @@ func main(){
 	// Set default CORS origin if not provided
 	corsOrigins := os.Getenv("CORS_ORIGIN")
 	if corsOrigins == "" {
-		corsOrigins = "http://localhost:3000"
+		if development == "true" {
+			corsOrigins = "http://localhost:3000"
+		} else {
+			corsOrigins = "https://moxium.tech"
+		}
 	}
 
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: corsOrigins,
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
-		AllowMethods: "GET, POST, PUT, DELETE, OPTIONS",
+		AllowOrigins:     corsOrigins,
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS",
 		AllowCredentials: true,
-		ExposeHeaders: "Set-Cookie",
+		ExposeHeaders:    "Set-Cookie",
 	}))
 
 	routes.SetupRoutes(app)
 
-
-	if development == "true" {
-		err = app.Listen( os.Getenv("API_URL") + ":" + port)
-	} else {
-		err = app.Listen(":" + "8080")
-	}
-	
+	err := app.Listen(":" + port)
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 		os.Exit(1)
