@@ -1,11 +1,12 @@
 setup:
   config:
-    GO_VERSION: 1.23
+    GO_VERSION: 1.22
 build:
-  run:
-    - go mod download
+  golang:
+    main: main.go
+    binary: app
 release:
   command:
     - ./heroku-build.sh
 run:
-  web: ./backend
+  web: ./app
