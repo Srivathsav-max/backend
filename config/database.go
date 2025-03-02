@@ -3,7 +3,7 @@ package config
 import (
 	"log"
 
-	"lumen/backend/prisma/db"
+	"backend/prisma/db"
 )
 
 var DB *db.PrismaClient

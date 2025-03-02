@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"lumen/backend/controllers"
+	"backend/controllers"
 
 	"github.com/gofiber/fiber/v2"
 )

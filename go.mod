@@ -1,4 +1,4 @@
-module lumen/backend
+module backend
 
 go 1.23.6
 

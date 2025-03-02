@@ -1,9 +1,9 @@
 package main
 
 import (
+	"backend/config"
+	"backend/routes"
 	"fmt"
-	"lumen/backend/config"
-	"lumen/backend/routes"
 	"os"
 
 	"github.com/gofiber/fiber/v2"

@@ -1,9 +1,9 @@
 package controllers
 
 import (
+	"backend/config"
+	"backend/prisma/db"
 	"context"
-	"lumen/backend/config"
-	"lumen/backend/prisma/db"
 
 	"github.com/gofiber/fiber/v2"
 )
