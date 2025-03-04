@@ -25,7 +25,7 @@ func init() {
 	}
 }
 
-func Handler(r *http.Request, w http.ResponseWriter) {
+func Handler(w http.ResponseWriter, r *http.Request) {
 	app := fiber.New()
 
 	// Use CORS config from environment
