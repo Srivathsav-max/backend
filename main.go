@@ -2,16 +2,18 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/srivathsav-max/backend/config"
 	"github.com/srivathsav-max/backend/routes"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func init() {
 	// Always try to load .env file first
 	if err := godotenv.Load(); err != nil {
 		log.Println("⚠️ Note: No .env file found, will use environment variables")
@@ -21,6 +23,27 @@ func main() {
 	if err := config.InitDatabase(); err != nil {
 		log.Fatalf("Failed to initialize database: %v", err)
 	}
+}
+
+func Handler(r *http.Request, w http.ResponseWriter) {
+	app := fiber.New()
+
+	// Use CORS config from environment
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     config.AppConfig.CorsOrigin,
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization",
+		AllowMethods:     "GET, POST, PUT, DELETE, OPTIONS",
+		AllowCredentials: true,
+		ExposeHeaders:    "Set-Cookie",
+	}))
+
+	routes.SetupRoutes(app)
+	handler := adaptor.FiberApp(app)
+	handler.ServeHTTP(w, r)
+}
+
+func main() {
+
 	defer config.DisconnectDatabase()
 
 	app := fiber.New()

@@ -32,6 +32,10 @@ func LoadConfig() error {
 		AppConfig.CorsOrigin = "https://moxium.tech"
 	}
 
+	if AppConfig.Port == "" {
+		AppConfig.Port = "3000"
+	}
+
 	log.Printf("✅ Configuration loaded (Development: %v)", AppConfig.Development)
 	return nil
 }
