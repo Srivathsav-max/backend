@@ -4,3 +4,4 @@ node_modules
 
 /tmp
 .air.toml
+.vercel
